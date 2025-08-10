@@ -18,7 +18,11 @@ const __dirname = path.resolve();
 app.use(express.json());
 app.use(cors());
 
-app.use(helmet()); // helmet is a security middleware that sets various HTTP headers to help protect your app from common web vulnerabilities
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+); // helmet is a security middleware that sets various HTTP headers to help protect your app from common web vulnerabilities
 app.use(morgan("dev")); // logs HTTP requests
 
 app.use(async (req, res, next) => {
