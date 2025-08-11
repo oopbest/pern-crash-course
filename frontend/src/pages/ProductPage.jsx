@@ -13,13 +13,21 @@ export default function ProductPage() {
     formData,
     setFormData,
     deleteProduct,
+    resetForm,
+    clearCurrentProduct,
   } = useProductStore();
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchProduct(id);
-  }, [fetchProduct, id]);
+
+    // Cleanup when leaving this page
+    return () => {
+      resetForm();
+      clearCurrentProduct?.();
+    };
+  }, [fetchProduct, id, resetForm, clearCurrentProduct]);
 
   if (loading) {
     return (
@@ -43,9 +51,15 @@ export default function ProductPage() {
     navigate("/");
   };
 
+  const goBack = () => {
+    resetForm();
+    clearCurrentProduct?.();
+    navigate("/");
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <button onClick={() => navigate("/")} className="btn btn-ghost mb-8">
+      <button onClick={goBack} className="btn btn-ghost mb-8">
         <ArrowLeftIcon className="size-5 mr-2" />
         Back to Products
       </button>

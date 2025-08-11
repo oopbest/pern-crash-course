@@ -88,11 +88,22 @@ const useProductStore = create((set, get) => ({
     }
   },
 
+  clearCurrentProduct: () => set({ currentProduct: null }),
+
+  // (optional) safer fetchProduct mapping to avoid dumping extra fields into formData
   fetchProduct: async (id) => {
     set({ loading: true, error: null });
     try {
       const response = await axios.get(`${BASE_URL}/api/products/${id}`);
-      set({ currentProduct: response.data.data, formData: response.data.data });
+      const p = response.data.data;
+      set({
+        currentProduct: p,
+        formData: {
+          name: p.name ?? "",
+          image: p.image ?? "",
+          price: p.price ?? "",
+        },
+      });
     } catch (error) {
       console.log("Error in fetchProduct function", error);
       set({ error: "Something went wrong", currentProduct: null });
